@@ -211,12 +211,12 @@
 			
 			-->
 			
-			<!--
+			
 			<plugin>
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>jib-maven-plugin</artifactId>
 				<version>3.3.2</version>
-				<configuration>
+				<!-- <configuration>
 					<to>
 						<image>docker.io/lucas0429/${project.artifactId}:4.0</image>
 						<auth>
@@ -225,8 +225,9 @@
 						</auth>
 					</to>
 				</configuration>
+				-->
 			</plugin>
-			-->
+			
 			
 		</plugins>
 	</build>
