@@ -1,0 +1,29 @@
+# Kind 클러스터 정의
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+
+# 클러스터에 포함될 노드들 정의
+nodes:
+  # control-plane 역할을 하는 노드 1개 생성
+  - role: control-plane
+
+    # 외부에서 도커 컨테이너(즉, 클러스터 내부 Pod)에 접근할 수 있도록 포트 매핑 설정
+    extraPortMappings:
+      # 일반 웹 접근용 포트 매핑 (옵션)
+      - containerPort: 80        # 컨테이너(클러스터) 내부 포트
+        hostPort: 80             # 로컬 호스트에서 접근할 포트
+        protocol: TCP
+
+      - containerPort: 443       # HTTPS 포트
+        hostPort: 443
+        protocol: TCP
+
+      # Spring Boot API 서비스용 포트 매핑
+      - containerPort: 30090     # 클러스터 내 bookmarker-api의 NodePort
+        hostPort: 18080          # 로컬에서 접근 시 사용할 포트 (예: http://localhost:18080)
+        protocol: TCP
+
+      # Next.js UI 프론트엔드용 포트 매핑
+      - containerPort: 30080     # 클러스터 내 bookmarker-ui의 NodePort
+        hostPort: 30080          # 로컬에서 접근 시 사용할 포트 (예: http://localhost:30080)
+        protocol: TCP
