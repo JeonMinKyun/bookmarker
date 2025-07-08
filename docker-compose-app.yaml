@@ -1,0 +1,59 @@
+version: '3.8'
+services:
+  bookmarker-api:
+    build:
+      context: bookmarker-api
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILE_ACTIVE: docker
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+      SPRING_DATASOURCE_URL: jdbc:postgresql://bookmarker-db:5432/appdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    ports:
+      - "18080:8080"
+    restart: always
+    depends_on:
+      - bookmarker-db
+    networks:
+      - bookmarker-network
+      
+      
+      #Docker 내부의 SpringBoot 요청 주소 bookmarker-api : service명이 되어 있음
+  bookmarker-ui-nextjs:
+    container_name: bookmark-ui-nextjs
+    build:
+      context: bookmark-ui-nextjs
+      dockerfile: Dockerfile.ui
+    ports:
+      - "13000:3000"
+    env_file:
+      - /bookmark-ui-nextjs/.env.local
+    networks:
+      - bookmarker-network
+      
+      
+networks:
+  bookmarker-network:
+    driver: bridge
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      

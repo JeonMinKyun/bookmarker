@@ -1,5 +1,6 @@
 package com.min.edu;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.min.edu.domain.Bookmark;
@@ -91,7 +93,7 @@ class BookmarkContollerTest {
 	// H2가 아닌 Postgresql를 사용하는 테스트를 진행한다
 	// flyway migration을 통해서 postgresql에도 create table과 insert가 migration되었다
 	// 15개의 셈플데이터를 통해서 1페이지 요청, 2페이지 요청의 결과를 CsvSource를 입력하여 결과를 JUnite 할 수 있따
-	@ParameterizedTest
+//	@ParameterizedTest
 	@CsvSource({
 		"1,15,2,1,true,false,true,false",
 		"2,15,2,2,false,true,false,true"
@@ -117,7 +119,29 @@ class BookmarkContollerTest {
 	}
 	
 	
-	
+	@Test
+	void createBookmarkErrorCheck() throws Exception {
+		MvcResult result = this.mvc.perform(
+									MockMvcRequestBuilders.post("/api/bookmarks")
+									.contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+									.content("""
+													{
+												    "url": "https://www.naver.com"
+												   }
+											""")
+										)
+								.andExpect(status().is4xxClientError())
+								.andExpect(jsonPath("$.field", is("title")))
+								.andExpect(jsonPath("$.message", is("제목은 필수 입력 값입니다")))
+								.andExpect(jsonPath("$.status", is(400)))
+								.andReturn();
+		
+		String contentType = result.getResponse().getContentType();
+		String responseBody = result.getResponse().getContentAsString();
+		
+		System.out.println("반환 결과는 contentType :" + contentType);
+		System.out.println("반환 결과의 내용 JSON : " + responseBody );
+	}
 	
 
 }

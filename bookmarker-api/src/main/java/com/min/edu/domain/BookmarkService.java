@@ -1,5 +1,6 @@
 package com.min.edu.domain;
 
+import java.time.Instant;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -34,6 +36,25 @@ public class BookmarkService {
 		
 		return new BookmarksDto(bookmarkPage);
 		
+	}
+
+	@Transactional(readOnly = true)
+	public BookmarksDto searchBookmarks(String query, Integer page) {
+		int pageNo = page<0 ? 0 : page-1;
+		Pageable pageable = PageRequest.of(pageNo, 10, Sort.Direction.DESC, "createdAt");
+//		Page<BookmarkDto> bookmarkPage = repository.searchBookmark(query, pageable);
+		
+		Page<BookmarkDto> bookmarkPage = repository.findByTitleContainsIgnoreCase(query, pageable);
+		
+		return new BookmarksDto(bookmarkPage);
+	}
+
+	
+	public BookmarkDto createBookmark(@Valid CreateBookmarkRequest request) {
+		Bookmark bookmark 
+		 		= new Bookmark(null, request.getTitle(), request.getUrl(), Instant.now());
+		Bookmark saveBookmark = repository.save(bookmark);
+		return bookmarkMapper.toDto(saveBookmark);
 	}
 	
 }
