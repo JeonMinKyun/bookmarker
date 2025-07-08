@@ -65,6 +65,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
       
+      # ✅ secrets.DOCKER_ENV 내용을 .env.local로 저장
+      - name: Create .env.local file
+        run: echo "${{ secrets.NODE_ENV }}" > .env.local
+      
       - name: Build
         run: npm run build
 
