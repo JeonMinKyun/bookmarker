@@ -39,8 +39,8 @@ jobs:
           ./mvnw clean package jib:dockerBuild -DskipTests
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t myimage:latest .
-          docker tag myimage:latest ${{ secrets.DOCKER_USERNAME }}/bookmarker-api:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/bookmarker-api:latest
+          docker tag myimage:latest ${{ secrets.DOCKER_USERNAME }}/bookmarker-api:2.0
+          docker push ${{ secrets.DOCKER_USERNAME }}/bookmarker-api:2.0
         env:
           DOCKER_BUILDKIT: 1
           DOCKER_CLI_EXPERIMENTAL: enabled
@@ -58,7 +58,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17 22.17.0
+      - name: Set up Node 22.17.0
         uses: actions/setup-node@v4
         with:
           node-version: 22.17.0
@@ -76,6 +76,6 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker build -f Dockerfile.ui -t ${{ secrets.DOCKER_USERNAME }}/bookmark-ui-nextjs .
-          docker push ${{ secrets.DOCKER_USERNAME }}/bookmark-ui-nextjs
+          docker build -f Dockerfile.ui -t ${{ secrets.DOCKER_USERNAME }}/bookmark-ui-nextjs:2.0 .
+          docker push ${{ secrets.DOCKER_USERNAME }}/bookmark-ui-nextjs:2.0
 
