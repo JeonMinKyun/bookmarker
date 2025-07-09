@@ -16,7 +16,7 @@ COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 COPY .env.local .env.local
 
-RUN npm run build
+RUN npm run build && ls -al .next
 
 #실행을 위한 이미지와 폴더를 선택하고 환경설정을 한다
 FROM node:20-alpine AS runner
